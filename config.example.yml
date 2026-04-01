@@ -1,0 +1,64 @@
+# AuthWatch Configuration
+# https://github.com/man15h/authwatch
+
+# Authelia log file path
+# Set log.file_path in your Authelia config, then share the volume
+authelia:
+  log_path: /logs/authelia.log
+
+# Database settings
+database:
+  path: /data/authwatch.db
+  retention_days: 90            # 0 = keep forever
+
+# Which events trigger notifications
+# Note: 1fa_success and 2fa_success require Authelia log.level: debug
+events:
+  1fa_success: false            # Successful first-factor login
+  1fa_failure: true             # Failed first-factor login
+  2fa_success: true             # Successful second-factor auth
+  2fa_failure: true             # Failed second-factor auth
+  ban: true                     # User banned by regulation
+
+# Rate limiting to prevent notification spam
+rate_limit:
+  cooldown_minutes: 5           # Min time between duplicate notifications per user
+
+# LDAP — resolve username → email for per-user notifications
+# Create a read-only LDAP user with permission to read user emails only
+ldap:
+  enabled: false
+  url: ldap://lldap:3890
+  base_dn: dc=opposites,dc=solar
+  user_base: ou=people,dc=opposites,dc=solar   # where user entries live
+  bind_dn: uid=authwatch,ou=people,dc=opposites,dc=solar
+  bind_password: "${LDAP_BIND_PASSWORD}"
+  timeout: 5000
+
+# Notification channels
+notifications:
+  # Fallback email when LDAP lookup fails or is disabled
+  admin_email: admin@example.com
+
+  smtp:
+    enabled: false
+    host: smtp.resend.com
+    port: 465
+    secure: true
+    username: resend
+    password: "${SMTP_PASSWORD}"
+    from: "AuthWatch <authwatch@example.com>"
+
+  ntfy:
+    enabled: false
+    url: https://ntfy.sh          # or your self-hosted ntfy URL
+    topic: authwatch
+    token: "${NTFY_TOKEN}"        # optional auth token
+    priority:
+      default: 3                  # 1=min, 3=default, 5=max
+      ban: 5
+      failure: 4
+
+# AuthWatch logging
+log:
+  level: info                     # trace, debug, info, warn, error
