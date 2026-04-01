@@ -1,0 +1,36 @@
+name: authwatch
+
+services:
+  authwatch:
+    build: .
+    container_name: authwatch
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+      CONFIG_PATH: /config.yml
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      NTFY_TOKEN: ${NTFY_TOKEN:-}
+    volumes:
+      - ./config.yml:/config.yml:ro
+      - authwatch-data:/data
+      # Share Authelia's log volume — mount the same path Authelia writes to
+      # Example: if Authelia writes to /config/authelia.log, mount that volume here
+      - authelia-config:/logs:ro
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.25"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+volumes:
+  authwatch-data:
+  # Reference the external volume where Authelia writes its logs
+  authelia-config:
+    external: true

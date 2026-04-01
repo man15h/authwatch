@@ -1,0 +1,21 @@
+{
+  "name": "authwatch",
+  "version": "0.1.0",
+  "description": "Lightweight Docker sidecar that watches Authelia logs for authentication events and sends notifications via SMTP and ntfy",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test src/**/*.test.js"
+  },
+  "dependencies": {
+    "js-yaml": "4.1.0",
+    "ldapts": "^8.1.7",
+    "nodemailer": "6.10.1",
+    "pino": "9.6.0",
+    "sql.js": "1.12.0"
+  }
+}
