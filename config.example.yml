@@ -20,10 +20,6 @@ events:
   2fa_failure: true             # Failed second-factor auth
   ban: true                     # User banned by regulation
 
-# Rate limiting to prevent notification spam
-rate_limit:
-  cooldown_minutes: 5           # Min time between duplicate notifications per user
-
 # LDAP — resolve username → email for per-user notifications
 # Create a read-only LDAP user with permission to read user emails only
 ldap:
